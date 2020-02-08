@@ -9,11 +9,11 @@ namespace ShoppingCartDemo.Entity
     {
         public Guid Id { get; set; }
         public Category Category { get; set; }
-        public decimal Discount { get; set; }
+        public double Discount { get; set; }
         public int ItemQuantity { get; set; }
         public DiscountType DiscountType { get; set; }
 
-        public Campaign(Category category, decimal discount, int itemQuantity, DiscountType discountType)
+        public Campaign(Category category, double discount, int itemQuantity, DiscountType discountType)
         {
             Category = category;
             Discount = discount;
