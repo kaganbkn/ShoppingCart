@@ -1,0 +1,5 @@
+﻿
+
+
+coupons have minimum cart amount constraint. if cart amount is less than minimum, discount is not applied. -> kuponların minimum alışveriş sepeti tutarı kısıtlaması vardır. alışveriş sepeti tutarı minimumdan düşükse indirim uygulanmaz.
+delivery cost is dynamic , based on the number of deliveries and number of  products -> teslimat maliyeti, teslimat sayısına ve ürün sayısına göre dinamiktir
