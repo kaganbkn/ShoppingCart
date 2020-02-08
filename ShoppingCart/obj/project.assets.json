@@ -15,7 +15,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "C:\\Workspace\\local\\ShoppingCart\\ShoppingCart\\ShoppingCart.csproj",
-      "projectName": "ShoppingCart",
+      "projectName": "ShoppingCartDemo",
       "projectPath": "C:\\Workspace\\local\\ShoppingCart\\ShoppingCart\\ShoppingCart.csproj",
       "packagesPath": "C:\\Users\\kagan.beken\\.nuget\\packages\\",
       "outputPath": "C:\\Workspace\\local\\ShoppingCart\\ShoppingCart\\obj\\",

@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace ShoppingCartDemo.Entity
 {
-    public class Campaign
+    public class Coupon
     {
         public Guid Id { get; set; }
-        public Category Category { get; set; }
+        public decimal MinimumAmount { get; set; }
         public decimal Discount { get; set; }
-        public int ItemQuantity { get; set; }
         public DiscountType DiscountType { get; set; }
 
-        public Campaign(Category category, decimal discount, int itemQuantity, DiscountType discountType)
+        public Coupon(decimal minimumAmount, decimal discount, DiscountType discountType)
         {
-            Category = category;
+            MinimumAmount = minimumAmount;
             Discount = discount;
-            ItemQuantity = itemQuantity;
             DiscountType = discountType;
         }
     }
