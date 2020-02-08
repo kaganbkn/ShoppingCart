@@ -7,7 +7,6 @@ namespace ShoppingCartDemo.Entity
 {
     public class Campaign
     {
-        public Guid Id { get; set; }
         public Category Category { get; set; }
         public double Discount { get; set; }
         public int ItemQuantity { get; set; }

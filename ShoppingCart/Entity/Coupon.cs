@@ -6,7 +6,6 @@ namespace ShoppingCartDemo.Entity
 {
     public class Coupon
     {
-        public Guid Id { get; set; }
         public double MinimumAmount { get; set; }
         public double Discount { get; set; }
         public DiscountType DiscountType { get; set; }
