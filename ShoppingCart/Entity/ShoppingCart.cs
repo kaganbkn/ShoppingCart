@@ -8,7 +8,7 @@ namespace ShoppingCartDemo.Entity
 {
     public class ShoppingCart
     {
-        private Dictionary<Product, int> Products { get; set; }
+        public Dictionary<Product, int> Products { get; set; }
         public ShoppingCart()
         {
             Products = new Dictionary<Product, int>();
