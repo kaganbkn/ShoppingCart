@@ -24,16 +24,23 @@ namespace ShoppingCartDemo
             var campaign3 = new Campaign(food, 5.0, 5, DiscountType.Amount);
             var campaign4 = new Campaign(drink, 5.0, 5, DiscountType.Amount);
             var campaign5 = new Campaign(drink, 50.0, 5, DiscountType.Rate);
+            Console.WriteLine("total : " + cart.GetTotalAmountBeforeCoupons);
             cart.ProductsPrint();
-            Console.WriteLine("asd");
+            Console.WriteLine("---");
             cart.ApplyDiscounts(campaign1,campaign2,campaign3, campaign4, campaign5);
             cart.ProductsPrint();
-            cart.NumberOfProductsInCategories();
+            Console.WriteLine("total : "+cart.GetTotalAmountBeforeCoupons);
+            var coupon =new Coupon(100,10,DiscountType.Rate);
+            cart.ApplyCoupon(coupon);
+            Console.WriteLine("total : "+cart.GetTotalAmountAfterDiscounts());
 
-            cart.ProductsPrint();
-
-
-
+            var deliveryCostCalculator=new DeliveryCostCalculator(75,5);
+            Console.WriteLine("->"+deliveryCostCalculator.CalculateFor(cart));
+            Console.WriteLine(cart.GetTotalAmountAfterDiscounts());
+            Console.WriteLine(cart.GetCouponDiscounts());
+            Console.WriteLine(cart.GetCampaignDiscounts());
+            Console.WriteLine(cart.GetDeliveryCost());
+            cart.Print();
 
 
             Console.Read();

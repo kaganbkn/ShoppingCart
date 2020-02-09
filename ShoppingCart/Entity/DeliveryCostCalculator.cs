@@ -7,25 +7,20 @@ namespace ShoppingCartDemo.Entity
     public class DeliveryCostCalculator
     {
         public double CostPerDelivery { get; set; }
-        public double NumberOfDeliveries { get; set; }
         public double CostPerProduct { get; set; }
-        private double FixedCost = 2.99;
+        public double FixedCost { get; set; }
 
-        public DeliveryCostCalculator(double costPerDelivery, double numberOfDeliveries, double costPerProduct)
+        public DeliveryCostCalculator(double costPerDelivery, double costPerProduct, double fixedCost = 2.99)
         {
             CostPerDelivery = costPerDelivery;
-            NumberOfDeliveries = numberOfDeliveries;
             CostPerProduct = costPerProduct;
+            FixedCost = fixedCost;
         }
-
-        public double CalculateFor(DeliveryCostCalculator deliveryCostCalculator)
+        public double CalculateFor(ShoppingCart shoppingCart)
         {
-            return (deliveryCostCalculator.CostPerDelivery * deliveryCostCalculator.NumberOfDeliveries) +
-                   (deliveryCostCalculator.CostPerProduct * deliveryCostCalculator.NumberOfDeliveries) + FixedCost;
-        }
-        public double CalculateFor1(ShoppingCart shoppingCart)
-        {
-            return 1.3;
+            var numberOfDeliveries = shoppingCart.CalculateNumberOfDeliveries();
+            var numberOfProducts = shoppingCart.CalculateNumberOfProducts();
+            return (CostPerDelivery * numberOfDeliveries) + (CostPerProduct * numberOfProducts) + FixedCost;
         }
     }
 }

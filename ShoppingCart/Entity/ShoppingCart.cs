@@ -9,9 +9,21 @@ namespace ShoppingCartDemo.Entity
     {
         public Product Product { get; set; }
         public int Quantity { get; set; }
-
         private Dictionary<Product, int> Products { get; set; }
         private Dictionary<Category, int> ProductsInCategories { get; set; }
+
+        private double _totalAmount;
+        public double GetTotalAmountBeforeCoupons
+        {
+            get { return Products.Sum(c => c.Key.DiscountedAmount * c.Value); }
+            set => _totalAmount = value;
+        }
+        public double GetTotalAmountAfterDiscounts()
+        {
+            return _totalAmount;
+        }
+
+        private double _totalCampaignDiscounts = 0;
 
         public ShoppingCart()
         {
@@ -19,20 +31,7 @@ namespace ShoppingCartDemo.Entity
             Products = new Dictionary<Product, int>();
         }
 
-        public void ProductsInCategoriesPrint()
-        {
-            foreach (var item in ProductsInCategories)
-            {
-                Console.WriteLine("--> " + item.Key.Title + " " + item.Value);
-            }
-        }
-        public void ProductsPrint()
-        {
-            foreach (var item in Products)
-            {
-                Console.WriteLine("--> name : " + item.Key.Title + " price: " + item.Key.Price + " quantity: " + item.Value);
-            }
-        }
+
 
         public void AddItem(Product product, int quantity)
         {
@@ -46,89 +45,79 @@ namespace ShoppingCartDemo.Entity
                 if (ProductsInCategories[campaign.Category] < campaign.ItemQuantity) continue;
                 foreach (var product in Products.Where(c => c.Key.Category == campaign.Category))
                 {
-                    if (campaign.DiscountType == DiscountType.Amount)
-                    {
-                        product.Key.Price -= campaign.Discount;
+                    var totalDiscount = campaign.DiscountType == DiscountType.Amount
+                        ? campaign.Discount
+                        : product.Key.DiscountedAmount * (campaign.Discount / 100);
 
-                    }
-                    else
-                    {
-                        product.Key.Price -= product.Key.Price * (campaign.Discount / 100);
-
-                    }
+                    product.Key.DiscountedAmount -= totalDiscount;
+                    _totalCampaignDiscounts += totalDiscount * product.Value;
                 }
             }
         }
-        public void ApplyCoupon(params Campaign[] campaigns)
+        public void ApplyCoupon(params Coupon[] coupons)
         {
-            NumberOfProductsInCategories();
-            foreach (var campaign in campaigns)
+            foreach (var coupon in coupons.Where(c => c.MinimumAmount <= GetTotalAmountBeforeCoupons))
             {
-                if (ProductsInCategories[campaign.Category] < campaign.ItemQuantity) continue;
-                foreach (var product in Products.Where(c => c.Key.Category == campaign.Category))
-                {
-                    if (campaign.DiscountType == DiscountType.Amount)
-                    {
-                        product.Key.Price -= campaign.Discount;
-
-                    }
-                    else
-                    {
-                        product.Key.Price -= product.Key.Price * (campaign.Discount / 100);
-
-                    }
-                }
+                GetTotalAmountBeforeCoupons -= coupon.DiscountType == DiscountType.Amount
+                    ? coupon.Discount
+                    : (coupon.Discount / 100) * GetTotalAmountBeforeCoupons;
             }
         }
 
-        private double GetTotalAmountBeforeDiscounts()
+        public double GetCouponDiscounts()
         {
-            double total = 0;
-            foreach (var product in Products)
-            {
-                total += product.Key.Price * product.Value;
-            }
-            return total;
-        }
-        public void GetTotalAmountAfterDiscounts()
-        {
-
+            return GetTotalAmountBeforeCoupons - _totalAmount;
         }
 
-        public void GetCouponDiscounts()
+        public double GetCampaignDiscounts()
         {
-
+            return _totalCampaignDiscounts;
         }
 
-        public void GetCampaignDiscounts()
+        public double GetDeliveryCost()
         {
-
-        }
-
-        public void GetDeliveryCost()
-        {
-
+            var cost = new DeliveryCostCalculator(7, 5);
+            return cost.CalculateFor(this);
         }
 
         public void Print()
         {
+            Console.WriteLine("--------------------------------------------------------------------------------------------------");
+            Console.WriteLine("|  Category Name  |  Product Name  |  Quantity  |  Unit Price  |  Total Price  |  Total Discount |");
+            Console.WriteLine("--------------------------------------------------------------------------------------------------");
+            foreach (var product in Products.OrderBy(c => c.Key.Category.Title))
+            {
+                Console.WriteLine($"| {TextBeautifier(product.Key.Category.Title, 15)} | " +
+                                  $"{TextBeautifier(product.Key.Title, 14)} | " +
+                                  $"{TextBeautifier(product.Value.ToString(), 10)} | " +
+                                  $"{TextBeautifier(product.Key.Price, 12)} | " +
+                                  $"{TextBeautifier(product.Value * product.Key.Price, 13)} | " +
+                                  $"{TextBeautifier((product.Key.Price - product.Key.DiscountedAmount) * product.Value, 15)} |");
+            }
+            Console.WriteLine("--------------------------------------------------------------------------------------------------");
+            Console.WriteLine($"------------------------------ Total Amount : {Products.Sum(c => c.Key.Price * c.Value)}");
+            Console.WriteLine($"------------- Total Discounts for Campaigns : {GetCampaignDiscounts()}");
+            Console.WriteLine($"--------------- Total Discounts for Coupons : {GetCouponDiscounts()}");
+            Console.WriteLine($"-------------- Total Amount After Discounts : {GetTotalAmountAfterDiscounts()}");
+            Console.WriteLine($"----------------------------- Delivery Cost : {GetDeliveryCost()}");
 
         }
-        public void CalculateNumberOfDeliveries()
+        public int CalculateNumberOfDeliveries()
         {
-            //distinc categories
+            return Products.Select(c => c.Key.Category).Distinct().Count();
         }
-        public void CalculateNumberOfProducts()
+        public int CalculateNumberOfProducts()
         {
-            //number of product type, not quantity
+            return Products.Keys.Count;
         }
-        public void ApplyCoupon(Coupon coupon)
+
+        private string TextBeautifier<T>(T text, int character)
         {
-
+            var value = text.ToString();
+            return value.PadLeft(character / 2, ' ').PadRight(character, ' ');
         }
 
-
-        public void NumberOfProductsInCategories()
+        private void NumberOfProductsInCategories() //refactor this code
         {
             foreach (var product in Products)
             {
@@ -140,6 +129,20 @@ namespace ShoppingCartDemo.Entity
                 {
                     ProductsInCategories.Add(product.Key.Category, product.Value);
                 }
+            }
+        }
+        public void ProductsInCategoriesPrint() //sil
+        {
+            foreach (var item in ProductsInCategories)
+            {
+                Console.WriteLine("--> " + item.Key.Title + " " + item.Value);
+            }
+        }
+        public void ProductsPrint() //sil
+        {
+            foreach (var item in Products)
+            {
+                Console.WriteLine("--> name : " + item.Key.Title + " price: " + item.Key.Price + " quantity: " + item.Value);
             }
         }
     }
