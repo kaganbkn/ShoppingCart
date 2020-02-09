@@ -20,29 +20,36 @@ namespace ShoppingCartDemo
             cart.AddItem(almond, 2);
             cart.AddItem(cola, 5);
             cart.AddItem(sprite, 1);
-            var campaign1 = new Campaign(food, 20.0, 3, DiscountType.Rate);
+            var campaign1 = new Campaign(food, 20.0, 7, DiscountType.Rate);
             var campaign2 = new Campaign(food, 50.0, 5, DiscountType.Rate);
             var campaign3 = new Campaign(food, 5.0, 5, DiscountType.Amount);
-            var campaign4 = new Campaign(drink, 5.0, 5, DiscountType.Amount);
+            var campaign4 = new Campaign(drink, 5.0, 7, DiscountType.Amount);
             var campaign5 = new Campaign(drink, 50.0, 5, DiscountType.Rate);
             Console.WriteLine("total : " + cart.GetTotalAmountBeforeCoupons);
             cart.ProductsPrint();
             Console.WriteLine("---");
             cart.ApplyDiscounts(campaign1,campaign2,campaign3, campaign4, campaign5);
+
+
+
             cart.ProductsPrint();
             Console.WriteLine("total : "+cart.GetTotalAmountBeforeCoupons);
+
+
+
             var coupon =new Coupon(100,10,DiscountType.Rate);
             cart.ApplyCoupon(coupon);
             Console.WriteLine("total : "+cart.GetTotalAmountAfterDiscounts());
 
-            var deliveryCostCalculator=new DeliveryCostCalculator(75,5);
+            var deliveryCostCalculator=new DeliveryCostCalculator(7,5);
             Console.WriteLine("->"+deliveryCostCalculator.CalculateFor(cart));
+            Console.WriteLine("delivery : "+cart.CalculateNumberOfDeliveries());
+            Console.WriteLine("product : "+cart.CalculateNumberOfProducts());
             Console.WriteLine(cart.GetTotalAmountAfterDiscounts());
             Console.WriteLine(cart.GetCouponDiscounts());
             Console.WriteLine(cart.GetCampaignDiscounts());
             Console.WriteLine(cart.GetDeliveryCost());
             cart.Print();
-
 
             Console.Read();
         }
