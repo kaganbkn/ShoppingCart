@@ -14,18 +14,18 @@ namespace ShoppingCartDemo.Entity
             Products = new Dictionary<Product, int>();
         }
 
-        private double _totalAmount;
-        public double GetTotalAmountBeforeCoupons
-        {
-            get { return Products.Sum(c => c.Key.DiscountedAmount * c.Value); }
-            set => _totalAmount = value;
-        }
+        private double _totalCampaignDiscounts = 0;
+        private double _totalCouponDiscounts = 0;
+
         public double GetTotalAmountAfterDiscounts()
         {
-            return _totalAmount;
+            return GetTotalAmountBeforeCoupons() - _totalCouponDiscounts;
         }
 
-        private double _totalCampaignDiscounts = 0;
+        public double GetTotalAmountBeforeCoupons()
+        {
+            return Products.Sum(c => c.Key.DiscountedAmount * c.Value);
+        }
 
         public void AddItem(Product product, int quantity)
         {
@@ -49,36 +49,26 @@ namespace ShoppingCartDemo.Entity
         }
         public void ApplyCoupon(params Coupon[] coupons)
         {
-            var isCouponApplied = false;
-            foreach (var coupon in coupons.Where(c => c.MinimumAmount <= GetTotalAmountBeforeCoupons))
+            foreach (var coupon in coupons.Where(c => c.MinimumAmount <= GetTotalAmountBeforeCoupons() - _totalCouponDiscounts))
             {
-                GetTotalAmountBeforeCoupons -= coupon.DiscountType == DiscountType.Amount
+                _totalCouponDiscounts += coupon.DiscountType == DiscountType.Amount
                     ? coupon.Discount
-                    : (coupon.Discount / 100) * GetTotalAmountBeforeCoupons;
-                isCouponApplied = true;
-            }
-            if (!isCouponApplied)
-            {
-                _totalAmount = GetTotalAmountBeforeCoupons;
+                    : (coupon.Discount / 100) * GetTotalAmountBeforeCoupons();
             }
         }
-
         public double GetCouponDiscounts()
         {
-            return GetTotalAmountBeforeCoupons - _totalAmount;
+            return _totalCouponDiscounts;
         }
-
         public double GetCampaignDiscounts()
         {
             return _totalCampaignDiscounts;
         }
-
         public double GetDeliveryCost()
         {
             var cost = new DeliveryCostCalculator(7, 5);
             return cost.CalculateFor(this);
         }
-
         public void Print()
         {
             Console.WriteLine("-----------------------------------------Shopping Cart-------------------------------------------");
@@ -110,18 +100,10 @@ namespace ShoppingCartDemo.Entity
         {
             return Products.Keys.Count;
         }
-
         private string TextBeautifier<T>(T text, int character)
         {
             var value = text.ToString();
             return value.PadLeft(character / 2, ' ').PadRight(character, ' ');
-        }
-        public void ProductsPrint() //sil
-        {
-            foreach (var item in Products)
-            {
-                Console.WriteLine("--> name : " + item.Key.Title + " price: " + item.Key.Price + " quantity: " + item.Value);
-            }
         }
     }
 }
