@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ShoppingCartDemo.Enums;
+﻿using ShoppingCartDemo.Enums;
 
-namespace ShoppingCartDemo.Entity
+namespace ShoppingCartDemo.Sources
 {
     public class Coupon
     {

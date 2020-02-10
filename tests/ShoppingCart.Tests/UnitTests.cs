@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using ShoppingCartDemo.Entity;
 using ShoppingCartDemo.Enums;
+using ShoppingCartDemo.Sources;
 using Xunit;
 
 namespace ShoppingCartDemo.Tests

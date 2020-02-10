@@ -1,6 +1,6 @@
 ﻿using System;
-using ShoppingCartDemo.Entity;
 using ShoppingCartDemo.Enums;
+using ShoppingCartDemo.Sources;
 
 namespace ShoppingCartDemo
 {

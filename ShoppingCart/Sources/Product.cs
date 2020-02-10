@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection.Metadata;
-
-namespace ShoppingCartDemo.Entity
+﻿namespace ShoppingCartDemo.Sources
 {
     public class Product
     {
