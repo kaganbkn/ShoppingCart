@@ -20,7 +20,7 @@ namespace ShoppingCartDemo.Entity
         {
             var numberOfDeliveries = shoppingCart.CalculateNumberOfDeliveries();
             var numberOfProducts = shoppingCart.CalculateNumberOfProducts();
-            return (CostPerDelivery * numberOfDeliveries) + (CostPerProduct * numberOfProducts) + FixedCost;
+            return Math.Round((CostPerDelivery * numberOfDeliveries) + (CostPerProduct * numberOfProducts) + FixedCost,2);
         }
     }
 }

@@ -36,5 +36,58 @@ namespace ShoppingCartDemo.Tests
             cart.ApplyDiscounts(campaign);
             Assert.Equal(1440, cart.GetTotalAmountBeforeCoupons);
         }
+
+        [Fact]
+        public void Get_Campaign_Discounts() //refactor
+        {
+            var cart = BuildShoppingCart();
+            var campaign = new Campaign(cart.Products.Select(c => c.Key.Category).FirstOrDefault(), 10, 2, DiscountType.Rate);
+            cart.ApplyDiscounts(campaign);
+            Assert.Equal(160, cart.GetCampaignDiscounts());
+        }
+
+        [Fact]
+        public void Apply_Discounts_For_Coupon()
+        {
+            var cart = BuildShoppingCart();
+            var coupon1 = new Coupon(1000, 20, DiscountType.Rate);
+            var coupon2 = new Coupon(3000, 20, DiscountType.Rate);
+            cart.ApplyCoupon(coupon1,coupon2);
+            Assert.Equal(1280, cart.GetTotalAmountAfterDiscounts());
+
+        }
+
+        [Fact]
+        public void Get_Coupon_Discounts()
+        {
+            var cart = BuildShoppingCart();
+            var coupon1 = new Coupon(1000, 20, DiscountType.Rate);
+            var coupon2 = new Coupon(3000, 20, DiscountType.Rate);
+            cart.ApplyCoupon(coupon1, coupon2);
+            Assert.Equal(320, cart.GetCouponDiscounts());
+        }
+
+        [Fact]
+        public void Calculate_Delivery_Cost()
+        {
+            var cart = BuildShoppingCart();
+            var deliveryCostCalculator = new DeliveryCostCalculator(2, 3,2.99);
+            Assert.Equal(10.99, deliveryCostCalculator.CalculateFor(cart));
+
+        }
+
+        [Fact]
+        public void Calculate_Number_Of_Product()
+        {
+            var cart = BuildShoppingCart();
+            Assert.Equal(2, cart.CalculateNumberOfProducts());
+        }
+
+        [Fact]
+        public void Calculate_Number_Of_Deliveries()
+        {
+            var cart = BuildShoppingCart();
+            Assert.Equal(1, cart.CalculateNumberOfDeliveries());
+        }
     }
 }

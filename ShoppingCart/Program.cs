@@ -37,8 +37,9 @@ namespace ShoppingCartDemo
 
 
 
-            var coupon =new Coupon(100,10,DiscountType.Rate);
-            cart.ApplyCoupon(coupon);
+            var coupon =new Coupon(600,10,DiscountType.Amount);
+            var coupon2 = new Coupon(500, 10, DiscountType.Amount);
+            cart.ApplyCoupon(coupon,coupon2);
             Console.WriteLine("total : "+cart.GetTotalAmountAfterDiscounts());
 
             var deliveryCostCalculator=new DeliveryCostCalculator(7,5);
